@@ -2,7 +2,15 @@
 
 import Navbar from "@/components/layout/navbar";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Clock } from "lucide-react";
+import {
+  ArrowLeft,
+  Bookmark,
+  Clock,
+  Eye,
+  Heart,
+  MessageCircle,
+  Share,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import formatNumber from "@/lib/formatNumber";
@@ -57,7 +65,7 @@ export default function Page({ params }: Blogpageprops) {
       <Navbar />
       <div className="fixed top-16 left-0 z-10 h-1 w-full">
         <div
-          className="h-full bg-primary transition-all duration-150 ease-out"
+          className="h-full bg-primary transition-all duration-150 ease-out blur-sm"
           style={{ width: `${readingProgress}%` }}
         />
       </div>
@@ -100,6 +108,22 @@ export default function Page({ params }: Blogpageprops) {
               </Badge>
             ))}
           </div>
+          <div className="flex items-center justify-between border-y border-slate-900 py-4">
+            <div className="flex gap-4 md:gap-8">
+              <div className="flex gap-2 items-center">
+                <Heart className="w-5 h-5" />{" "}
+                <span>{formatNumber(blog.engagement.likes)}</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <MessageCircle className="w-5 h-5" />{" "}
+                <span>{formatNumber(blog.engagement.comments)}</span>
+              </div>
+            </div>
+            <div className="flex gap-4 md:gap-8">
+              <Bookmark className="w-5 h-5" />
+              <Share className="w-5 h-5" />{" "}
+            </div>
+          </div>
           <div className="relative w-full aspect-video">
             {blog.featuredImage && (
               <Image
@@ -111,8 +135,8 @@ export default function Page({ params }: Blogpageprops) {
             )}
           </div>
           <div className="prose prose-lg max-w-none mb-8">
-          <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-        </div>
+            <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+          </div>
         </div>
       </div>
     </div>

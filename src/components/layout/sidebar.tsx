@@ -38,7 +38,7 @@ export default function Sidebar() {
     },
   ];
   return (
-    <div className="w-80 flex flex-col gap-6">
+    <div className="w-80 flex flex-col gap-6 sticky top-16 z-40">
       {/* Trending tags */}
       <div className="flex flex-col gap-8 border border-slate-800 rounded-md p-4">
         <div className="flex gap-4">

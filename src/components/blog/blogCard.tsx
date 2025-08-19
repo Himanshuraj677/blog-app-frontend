@@ -62,13 +62,12 @@ export default function BlogCard({ blog }: BlogcardProps) {
           {/* Blog Details */}
           <div className="flex gap-2 flex-col">
             <h2 className="text-xl font-bold">{blog.title}</h2>
-            <p className="text-md text-muted-foreground">
-              {blog.excerpt}
-            </p>
+            <p className="text-md text-muted-foreground">{blog.excerpt}</p>
 
             {/* Tags */}
-            <div className="flex gap-4">
-              {blog.tags.slice(0, 3).map((tag, id) => (
+            <div className="flex gap-2 flex-wrap">
+              {/* First 2 tags always visible */}
+              {blog.tags.slice(0, 2).map((tag, id) => (
                 <Badge
                   key={id}
                   variant="secondary"
@@ -78,20 +77,30 @@ export default function BlogCard({ blog }: BlogcardProps) {
                 </Badge>
               ))}
 
-              {/* Show +N more if there are extra tags */}
-              {blog.tags.length > 3 && (
+              {/* Show 3rd only on md+ */}
+              {blog.tags[2] && (
+                <Badge
+                  variant="secondary"
+                  className="hidden md:inline-flex text-xs hover:bg-accent cursor-pointer transition-colors"
+                >
+                  #{blog.tags[2]}
+                </Badge>
+              )}
+
+              {/* +N more */}
+              {blog.tags.length > 2 && (
                 <Badge
                   variant="secondary"
                   className="text-xs hover:bg-accent cursor-pointer transition-colors"
                 >
-                  +{blog.tags.length - 3} more
+                  +{blog.tags.length - 2} more
                 </Badge>
               )}
             </div>
           </div>
           {/* Engagements */}
           <div className="flex items-center justify-between border-t border-slate-800 pt-6 mb-6">
-            <div className="flex gap-8">
+            <div className="flex gap-4 md:gap-8">
               <div className="flex gap-2 items-center">
                 <Heart className="w-5 h-5" />{" "}
                 <span>{formatNumber(blog.engagement.likes)}</span>
@@ -105,15 +114,9 @@ export default function BlogCard({ blog }: BlogcardProps) {
                 <span>{formatNumber(blog.engagement.views)}</span>
               </div>
             </div>
-            <div className="flex gap-8">
-              <div className="flex gap-2 items-center">
-                <Bookmark className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.bookmarks)}</span>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Share className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.shares)}</span>
-              </div>
+            <div className="flex gap-4 md:gap-8">
+              <Bookmark className="w-5 h-5" />
+              <Share className="w-5 h-5" />{" "}
             </div>
           </div>
         </div>

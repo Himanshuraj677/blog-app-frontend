@@ -23,9 +23,9 @@ export default function Home() {
             }
           </div>
         </main>
-        {/* <aside className="hidden lg:block">
+        <aside className="hidden lg:block relative w-80">
           <Sidebar />
-        </aside> */}
+        </aside>
       </div>
     </div>
   );

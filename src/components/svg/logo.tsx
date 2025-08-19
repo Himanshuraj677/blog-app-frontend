@@ -1,27 +1,30 @@
 import React from "react";
 
 export default function TechBlogLogo({
-  size = 48,
   primaryText = "Tech",
   secondaryText = "Blog",
-  primaryColor = "#f9fafb", 
+  primaryColor = "#f9fafb",
   secondaryColor = "#9ca3af",
   gradientStart = "#06b6d4",
-  gradientEnd = "#8b5cf6" 
-
+  gradientEnd = "#8b5cf6",
 }) {
-  const iconSize = size;
-  const totalWidth = iconSize * 5; // adjust as needed for wordmark spacing
+  const charWidth = 12;
+  const textWidth =
+    (primaryText.length + secondaryText.length) * charWidth;
+
+  const iconWidth = 54;
+  const viewBoxWidth = iconWidth + textWidth + 10;
+  const viewBoxHeight = 48;
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={totalWidth}
-      height={iconSize}
-      viewBox={`0 0 240 48`}
+      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
       fill="none"
       role="img"
       aria-labelledby="title"
+      className="h-10 w-auto"
+      preserveAspectRatio="xMinYMid meet"
     >
       <title>{`${primaryText} ${secondaryText} Logo`}</title>
       <defs>
@@ -40,10 +43,7 @@ export default function TechBlogLogo({
         strokeWidth="3"
         fill="none"
       />
-      <path
-        d="M24 12 L30 24 L24 36 L18 24 Z"
-        fill="url(#tb-accent)"
-      />
+      <path d="M24 12 L30 24 L24 36 L18 24 Z" fill="url(#tb-accent)" />
       <circle cx="24" cy="24" r="3" fill={primaryColor} />
 
       {/* Wordmark */}
@@ -58,7 +58,7 @@ export default function TechBlogLogo({
         {primaryText}
       </text>
       <text
-        x={54 + primaryText.length * 12} // basic spacing calc
+        x={54 + primaryText.length * charWidth}
         y="30"
         fontFamily="Inter, ui-sans-serif, system-ui"
         fontSize="20"
