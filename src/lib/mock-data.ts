@@ -501,8 +501,483 @@ export const Mock_blogs = [
   {
     id: "2",
     title: "Building Scalable APIs with TypeScript",
-    content:
-      "<h2>Why TypeScript for APIs?</h2><p>TypeScript provides excellent type safety and developer experience when building APIs. In this article, we'll explore best practices for creating scalable, maintainable API architectures.</p><h3>Core Principles</h3><ul><li>Type-safe request/response handling</li><li>Proper error handling patterns</li><li>Database integration with ORMs</li><li>Authentication and authorization</li></ul><p>We'll build a complete example API that demonstrates these concepts in action.</p>",
+    content: {
+      type: "doc",
+      content: [
+        {
+          type: "heading",
+          attrs: {
+            textAlign: null,
+            level: 1,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Getting started",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Welcome to the ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "italic",
+                },
+                {
+                  type: "highlight",
+                  attrs: {
+                    color: "var(--tt-color-highlight-yellow)",
+                  },
+                },
+              ],
+              text: "Simple Editor",
+            },
+            {
+              type: "text",
+              text: " template! This template integrates ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "bold",
+                },
+              ],
+              text: "open source",
+            },
+            {
+              type: "text",
+              text: " UI components and Tiptap extensions licensed under ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "bold",
+                },
+              ],
+              text: "MIT",
+            },
+            {
+              type: "text",
+              text: ".",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Integrate it by following the ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "link",
+                  attrs: {
+                    href: "https://tiptap.dev/docs/ui-components/templates/simple-editor",
+                    target: "_blank",
+                    rel: "noopener noreferrer nofollow",
+                    class: null,
+                  },
+                },
+              ],
+              text: "Tiptap UI Components docs",
+            },
+            {
+              type: "text",
+              text: " or using our CLI tool.",
+            },
+          ],
+        },
+        {
+          type: "codeBlock",
+          attrs: {
+            language: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "npx @tiptap/cli init",
+            },
+          ],
+        },
+        {
+          type: "heading",
+          attrs: {
+            textAlign: null,
+            level: 2,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Features",
+            },
+          ],
+        },
+        {
+          type: "blockquote",
+          content: [
+            {
+              type: "paragraph",
+              attrs: {
+                textAlign: null,
+              },
+              content: [
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "italic",
+                    },
+                  ],
+                  text: "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "code",
+                    },
+                  ],
+                  text: "**",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "italic",
+                    },
+                  ],
+                  text: " or use keyboard shortcuts ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "code",
+                    },
+                  ],
+                  text: "⌘+B",
+                },
+                {
+                  type: "text",
+                  text: " for ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "strike",
+                    },
+                  ],
+                  text: "most",
+                },
+                {
+                  type: "text",
+                  text: " all common markdown marks. 🪄",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              text: "Add images, customize alignment, and apply ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "highlight",
+                  attrs: {
+                    color: "var(--tt-color-highlight-blue)",
+                  },
+                },
+              ],
+              text: "advanced formatting",
+            },
+            {
+              type: "text",
+              text: " to make your writing more engaging and professional.",
+            },
+          ],
+        },
+        {
+          type: "image",
+          attrs: {
+            src: "/images/tiptap-ui-placeholder-image.jpg",
+            alt: "placeholder-image",
+            title: "placeholder-image",
+          },
+        },
+        {
+          type: "bulletList",
+          content: [
+            {
+              type: "listItem",
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Superscript",
+                    },
+                    {
+                      type: "text",
+                      text: " (x",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "superscript",
+                        },
+                      ],
+                      text: "2",
+                    },
+                    {
+                      type: "text",
+                      text: ") and ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Subscript",
+                    },
+                    {
+                      type: "text",
+                      text: " (H",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "subscript",
+                        },
+                      ],
+                      text: "2",
+                    },
+                    {
+                      type: "text",
+                      text: "O) for precision.",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: "listItem",
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Typographic conversion",
+                    },
+                    {
+                      type: "text",
+                      text: ": automatically convert to ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "code",
+                        },
+                      ],
+                      text: "->",
+                    },
+                    {
+                      type: "text",
+                      text: " an arrow ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "→",
+                    },
+                    {
+                      type: "text",
+                      text: ".",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "italic",
+                },
+              ],
+              text: "→ ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "link",
+                  attrs: {
+                    href: "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
+                    target: "_blank",
+                    rel: "noopener noreferrer nofollow",
+                    class: null,
+                  },
+                },
+              ],
+              text: "Learn more",
+            },
+          ],
+        },
+        {
+          type: "horizontalRule",
+        },
+        {
+          type: "heading",
+          attrs: {
+            textAlign: "left",
+            level: 2,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Make it your own",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              text: "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style.",
+            },
+          ],
+        },
+        {
+          type: "taskList",
+          content: [
+            {
+              type: "taskItem",
+              attrs: {
+                checked: true,
+              },
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      text: "Test template",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: "taskItem",
+              attrs: {
+                checked: false,
+              },
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "link",
+                          attrs: {
+                            href: "https://tiptap.dev/docs/ui-components/templates/simple-editor",
+                            target: "_blank",
+                            rel: "noopener noreferrer nofollow",
+                            class: null,
+                          },
+                        },
+                      ],
+                      text: "Integrate the free template",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+        },
+      ],
+    },
     excerpt:
       "Learn how to build robust, type-safe APIs using TypeScript with proper error handling and scalable architecture patterns.",
     authorId: "2",
@@ -525,8 +1000,483 @@ export const Mock_blogs = [
   {
     id: "3",
     title: "The Future of Web Development",
-    content:
-      "<h2>Emerging Trends</h2><p>The web development landscape is constantly evolving. Let's explore the trends that will shape the future of how we build web applications.</p><h3>Key Trends</h3><ul><li>Edge computing and serverless</li><li>AI-powered development tools</li><li>WebAssembly adoption</li><li>Progressive Web Apps evolution</li></ul><p>These technologies are already changing how we approach web development, and their impact will only grow stronger.</p>",
+    content: {
+      type: "doc",
+      content: [
+        {
+          type: "heading",
+          attrs: {
+            textAlign: null,
+            level: 1,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Getting started",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Welcome to the ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "italic",
+                },
+                {
+                  type: "highlight",
+                  attrs: {
+                    color: "var(--tt-color-highlight-yellow)",
+                  },
+                },
+              ],
+              text: "Simple Editor",
+            },
+            {
+              type: "text",
+              text: " template! This template integrates ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "bold",
+                },
+              ],
+              text: "open source",
+            },
+            {
+              type: "text",
+              text: " UI components and Tiptap extensions licensed under ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "bold",
+                },
+              ],
+              text: "MIT",
+            },
+            {
+              type: "text",
+              text: ".",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Integrate it by following the ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "link",
+                  attrs: {
+                    href: "https://tiptap.dev/docs/ui-components/templates/simple-editor",
+                    target: "_blank",
+                    rel: "noopener noreferrer nofollow",
+                    class: null,
+                  },
+                },
+              ],
+              text: "Tiptap UI Components docs",
+            },
+            {
+              type: "text",
+              text: " or using our CLI tool.",
+            },
+          ],
+        },
+        {
+          type: "codeBlock",
+          attrs: {
+            language: null,
+          },
+          content: [
+            {
+              type: "text",
+              text: "npx @tiptap/cli init",
+            },
+          ],
+        },
+        {
+          type: "heading",
+          attrs: {
+            textAlign: null,
+            level: 2,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Features",
+            },
+          ],
+        },
+        {
+          type: "blockquote",
+          content: [
+            {
+              type: "paragraph",
+              attrs: {
+                textAlign: null,
+              },
+              content: [
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "italic",
+                    },
+                  ],
+                  text: "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "code",
+                    },
+                  ],
+                  text: "**",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "italic",
+                    },
+                  ],
+                  text: " or use keyboard shortcuts ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "code",
+                    },
+                  ],
+                  text: "⌘+B",
+                },
+                {
+                  type: "text",
+                  text: " for ",
+                },
+                {
+                  type: "text",
+                  marks: [
+                    {
+                      type: "strike",
+                    },
+                  ],
+                  text: "most",
+                },
+                {
+                  type: "text",
+                  text: " all common markdown marks. 🪄",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              text: "Add images, customize alignment, and apply ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "highlight",
+                  attrs: {
+                    color: "var(--tt-color-highlight-blue)",
+                  },
+                },
+              ],
+              text: "advanced formatting",
+            },
+            {
+              type: "text",
+              text: " to make your writing more engaging and professional.",
+            },
+          ],
+        },
+        {
+          type: "image",
+          attrs: {
+            src: "/images/tiptap-ui-placeholder-image.jpg",
+            alt: "placeholder-image",
+            title: "placeholder-image",
+          },
+        },
+        {
+          type: "bulletList",
+          content: [
+            {
+              type: "listItem",
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Superscript",
+                    },
+                    {
+                      type: "text",
+                      text: " (x",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "superscript",
+                        },
+                      ],
+                      text: "2",
+                    },
+                    {
+                      type: "text",
+                      text: ") and ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Subscript",
+                    },
+                    {
+                      type: "text",
+                      text: " (H",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "subscript",
+                        },
+                      ],
+                      text: "2",
+                    },
+                    {
+                      type: "text",
+                      text: "O) for precision.",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: "listItem",
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "Typographic conversion",
+                    },
+                    {
+                      type: "text",
+                      text: ": automatically convert to ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "code",
+                        },
+                      ],
+                      text: "->",
+                    },
+                    {
+                      type: "text",
+                      text: " an arrow ",
+                    },
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "bold",
+                        },
+                      ],
+                      text: "→",
+                    },
+                    {
+                      type: "text",
+                      text: ".",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "italic",
+                },
+              ],
+              text: "→ ",
+            },
+            {
+              type: "text",
+              marks: [
+                {
+                  type: "link",
+                  attrs: {
+                    href: "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
+                    target: "_blank",
+                    rel: "noopener noreferrer nofollow",
+                    class: null,
+                  },
+                },
+              ],
+              text: "Learn more",
+            },
+          ],
+        },
+        {
+          type: "horizontalRule",
+        },
+        {
+          type: "heading",
+          attrs: {
+            textAlign: "left",
+            level: 2,
+          },
+          content: [
+            {
+              type: "text",
+              text: "Make it your own",
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+          content: [
+            {
+              type: "text",
+              text: "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style.",
+            },
+          ],
+        },
+        {
+          type: "taskList",
+          content: [
+            {
+              type: "taskItem",
+              attrs: {
+                checked: true,
+              },
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      text: "Test template",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: "taskItem",
+              attrs: {
+                checked: false,
+              },
+              content: [
+                {
+                  type: "paragraph",
+                  attrs: {
+                    textAlign: "left",
+                  },
+                  content: [
+                    {
+                      type: "text",
+                      marks: [
+                        {
+                          type: "link",
+                          attrs: {
+                            href: "https://tiptap.dev/docs/ui-components/templates/simple-editor",
+                            target: "_blank",
+                            rel: "noopener noreferrer nofollow",
+                            class: null,
+                          },
+                        },
+                      ],
+                      text: "Integrate the free template",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "paragraph",
+          attrs: {
+            textAlign: "left",
+          },
+        },
+      ],
+    },
     excerpt:
       "Explore the emerging trends and technologies that will define the future of web development in the coming years.",
     authorId: "1",

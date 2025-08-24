@@ -126,7 +126,7 @@
   }
 }
 
-@layer components {
+/* @layer components {
   .prose {
     @apply text-foreground max-w-none;
   }
@@ -227,4 +227,4 @@
   .prose-lg p {
     @apply text-lg leading-relaxed;
   }
-}
+} */

@@ -55,13 +55,11 @@ body,
 }
 
 .simple-editor-wrapper {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
   overflow: auto;
 }
 
 .simple-editor-content {
-  max-width: 648px;
   width: 100%;
   margin: 0 auto;
   height: 100%;
@@ -72,7 +70,7 @@ body,
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   flex: 1;
-  padding: 3rem 3rem 30vh;
+  // padding: 3rem 3rem 30vh;
 }
 
 @media screen and (max-width: 480px) {

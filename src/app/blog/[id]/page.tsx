@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import formatNumber from "@/lib/formatNumber";
 import Image from "next/image";
+import BlogForm from "@/components/blog/blog-form";
+import { Mock_blogs } from "@/lib/mock-data";
 
 interface Blogpageprops {
   params: {
@@ -23,30 +25,7 @@ interface Blogpageprops {
 }
 export default function Page({ params }: Blogpageprops) {
   const [readingProgress, setReadingProgress] = useState(0);
-  const blog = {
-    id: "1",
-    title: "Getting Started with Next.js 14 and App Router",
-    content:
-      "<h2>Introduction to Next.js 14</h2><p>Next.js 14 brings exciting new features and improvements to the React framework. In this comprehensive guide, we'll explore the App Router, Server Components, and the latest performance optimizations.</p><h3>Key Features</h3><ul><li>Improved App Router with better performance</li><li>Enhanced Server Components</li><li>Better TypeScript support</li><li>Optimized bundling</li></ul><p>Let's dive into each of these features and see how they can improve your development experience.</p>",
-    excerpt:
-      "Explore the latest features in Next.js 14 including App Router improvements and Server Components enhancements.",
-    authorId: "3",
-    author: "Himanshu Raj",
-    tags: ["nextjs", "react", "web-development", "javascript"],
-    status: "published",
-    featuredImage: "/placeholder.svg?height=400&width=800",
-    readingTime: 8,
-    engagement: {
-      likes: 124,
-      bookmarks: 45,
-      comments: 23,
-      views: 1250,
-      shares: 18,
-    },
-    createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2024-01-15T10:00:00Z",
-    publishedAt: "2024-01-15T10:00:00Z",
-  };
+  const blog = Mock_blogs[0];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,8 +113,8 @@ export default function Page({ params }: Blogpageprops) {
               />
             )}
           </div>
-          <div className="prose prose-lg max-w-none mb-8">
-            <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+          <div className="prose prose-lg max-w-full mb-8">
+            <BlogForm editable={false} blog={blog}/>
           </div>
         </div>
       </div>

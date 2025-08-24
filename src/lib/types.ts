@@ -7,7 +7,7 @@ export type PostStatus = "draft" | "pending" | "published" | "archived"
 export interface Blog {
   id: string
   title: string
-  content: JSON
+  content: string | Record<string, any>
   excerpt: string
   authorId: string
   author: User | string
