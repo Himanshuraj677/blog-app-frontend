@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import "./globals.css";
+import { ToastContainer } from 'react-toastify';
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +20,10 @@ export default function RootLayout({
       <body
         className={GeistSans.className}
       >
-        {children}
+        <AuthProvider>
+          {children}
+          <ToastContainer theme="dark" />
+        </AuthProvider>
       </body>
     </html>
   );

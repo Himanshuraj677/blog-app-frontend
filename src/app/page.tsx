@@ -1,7 +1,7 @@
 "use client"
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
-import { MOCK_POSTS } from "@/lib/mock-data";
+import { Mock_blogs } from "@/lib/mock-data";
 import { Skeleton } from "@/components/ui/skeleton"
 import BlogCard from "@/components/blog/blogCard";
 
@@ -17,7 +17,7 @@ export default function Home() {
           </div> */}
           <div className="flex flex-col gap-8 w-full">
             {
-              MOCK_POSTS.map((blog, id) => (
+              Mock_blogs.map((blog, id) => (
                 <BlogCard key={id} blog={blog} />
               ))
             }
