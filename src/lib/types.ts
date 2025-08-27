@@ -28,6 +28,16 @@ export interface Blog {
   publishedAt?: string
 }
 
+
+export interface BlogInput {
+  title: string
+  excerpt: string
+  tags: string[]
+  status: PostStatus | string
+  featuredImage?: string
+  content: string | Record<string, any>
+}
+
 export interface User {
   id: string
   username: string

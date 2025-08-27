@@ -186,7 +186,7 @@ export function SimpleEditor({
   editable = true,
   onChange,
 }: {
-  content: any;
+  content?: any;
   editable?: boolean;
   onChange?: (json: any, editor: Editor) => void;
 }) {

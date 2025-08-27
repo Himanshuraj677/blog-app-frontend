@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import BlogForm from "@/components/blog/blog-form"
 import { useAuth } from "@/context/AuthContext"
+import { BlogInput } from "@/lib/types"
 export default function CreatePostPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -17,6 +18,9 @@ export default function CreatePostPage() {
     setIsLoading(false)
   }, [router, user])
 
+  const handleSubmit = (blog: BlogInput) => {
+    console.log(blog);
+  }
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -28,5 +32,5 @@ export default function CreatePostPage() {
     )
   }
 
-  return <BlogForm mode="create" />
+  return <BlogForm type="create" handleSubmit={handleSubmit} />
 }
