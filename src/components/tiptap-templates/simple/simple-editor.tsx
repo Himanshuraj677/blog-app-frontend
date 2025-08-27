@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import { EditorContent, EditorContext, useEditor, Editor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -184,9 +184,11 @@ const MobileToolbarContent = ({
 export function SimpleEditor({
   content,
   editable = true,
+  onChange,
 }: {
   content: any;
   editable?: boolean;
+  onChange?: (json: any, editor: Editor) => void;
 }) {
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
@@ -235,6 +237,9 @@ export function SimpleEditor({
       }),
     ],
     content,
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getJSON(), editor);
+    },
   });
 
   const rect = useCursorVisibility({

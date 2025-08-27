@@ -12,6 +12,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 interface BlogcardProps {
   blog: Blog;
 }
@@ -27,7 +28,7 @@ export default function BlogCard({ blog }: BlogcardProps) {
       <CardContent className="p-0">
         <div className="relative w-full aspect-video rounded-t-md overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1619410283995-43d9134e7656?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0"
+            src={blog.featuredImage as string}
             alt={blog.title}
             fill
             className="object-cover object-center"
@@ -61,8 +62,10 @@ export default function BlogCard({ blog }: BlogcardProps) {
 
           {/* Blog Details */}
           <div className="flex gap-2 flex-col">
-            <h2 className="text-xl font-bold">{blog.title}</h2>
-            <p className="text-md text-muted-foreground">{blog.excerpt}</p>
+            <Link href={`/blog/${blog.id}`} className="flex flex-col gap-2">
+              <h2 className="text-xl font-bold">{blog.title}</h2>
+              <p className="text-md text-muted-foreground">{blog.excerpt}</p>
+            </Link>
 
             {/* Tags */}
             <div className="flex gap-2 flex-wrap">

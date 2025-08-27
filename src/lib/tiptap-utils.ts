@@ -1,6 +1,7 @@
 import type { Node as TiptapNode } from "@tiptap/pm/model"
 import { NodeSelection, Selection, TextSelection } from "@tiptap/pm/state"
 import type { Editor } from "@tiptap/react"
+import { API_SERVICES } from "./constant"
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -291,29 +292,64 @@ export const handleImageUpload = async (
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal
 ): Promise<string> => {
-  // Validate file
+  console.log("Hello World");
   if (!file) {
-    throw new Error("No file provided")
+    throw new Error("No file provided");
   }
 
   if (file.size > MAX_FILE_SIZE) {
     throw new Error(
       `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
-    )
+    );
   }
 
-  // For demo/testing: Simulate upload progress. In production, replace the following code
-  // with your own upload implementation.
-  for (let progress = 0; progress <= 100; progress += 10) {
-    if (abortSignal?.aborted) {
-      throw new Error("Upload cancelled")
+  // 1️⃣ Ask your backend for a signed upload URL
+  const res = await fetch(
+    `${API_SERVICES.image}/get-upload-url?filename=${encodeURIComponent(file.name)}&bucket=blog-image`,
+    { signal: abortSignal }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to get upload URL from backend");
+  }
+
+  const { uploadUrl, filePath } = await res.json();
+
+  // 2️⃣ Upload directly to Supabase using fetch with progress
+  await new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = Math.round((event.loaded / event.total) * 100);
+        onProgress?.({ progress });
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve();
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Upload failed"));
+    xhr.onabort = () => reject(new Error("Upload cancelled"));
+
+    xhr.open("PUT", uploadUrl);
+    xhr.setRequestHeader("Content-Type", file.type); // important for Supabase
+    xhr.send(file);
+
+    if (abortSignal) {
+      abortSignal.addEventListener("abort", () => xhr.abort());
     }
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    onProgress?.({ progress })
-  }
+  });
 
-  return "/images/tiptap-ui-placeholder-image.jpg"
-}
+  // 3️⃣ Return a signed view URL (optional)
+  const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL!}/storage/v1/object/public/blog-image/${filePath}`;
+  return publicUrl;
+};
 
 type ProtocolOptions = {
   /**

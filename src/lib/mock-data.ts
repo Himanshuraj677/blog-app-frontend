@@ -485,7 +485,7 @@ export const Mock_blogs = [
     author: "Himanshu Raj",
     tags: ["nextjs", "react", "web-development", "javascript"],
     status: "published",
-    featuredImage: "/placeholder.svg?height=400&width=800",
+    featuredImage: "https://images.unsplash.com/photo-1619410283995-43d9134e7656?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
     readingTime: 8,
     engagement: {
       likes: 124,
@@ -984,7 +984,7 @@ export const Mock_blogs = [
     author: "Devanshu Raj",
     tags: ["typescript", "api", "backend", "nodejs"],
     status: "published",
-    featuredImage: "/placeholder.svg?height=400&width=800",
+    featuredImage: "https://images.unsplash.com/photo-1619410283995-43d9134e7656?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
     readingTime: 12,
     engagement: {
       likes: 89,
@@ -1483,7 +1483,7 @@ export const Mock_blogs = [
     author: "Abhinav Kumar",
     tags: ["web-development", "future-tech", "trends", "innovation"],
     status: "published",
-    featuredImage: "/placeholder.svg?height=400&width=800",
+    featuredImage: "https://images.unsplash.com/photo-1619410283995-43d9134e7656?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
     readingTime: 6,
     engagement: {
       likes: 156,

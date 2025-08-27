@@ -78,7 +78,7 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
     }
   };
   return (
-    <div className="w-full">
+    <div className="w-full relative z-50">
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold mb-4">
           {mode === "signin" ? "Sign In" : "Sign Up"}

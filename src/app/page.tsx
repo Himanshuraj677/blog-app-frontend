@@ -11,10 +11,10 @@ export default function Home() {
       <Navbar />
       <div className="container mx-auto flex flex-row px-4 py-8 gap-8 max-w-full">
         <main className="flex-1">
-          {/* <div className="mb-4">
+          <div className="mb-4">
             <h1 className="text-4xl font-bold mb-2">Latest Posts</h1>
             <p className="text-md text-muted-foreground">Discover the latest articles from the community</p>
-          </div> */}
+          </div>
           <div className="flex flex-col gap-8 w-full">
             {
               Mock_blogs.map((blog, id) => (

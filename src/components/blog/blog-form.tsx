@@ -4,11 +4,12 @@ import { SimpleEditor } from '../tiptap-templates/simple/simple-editor';
 
 interface BlogFormProps {
     editable: boolean;
-    blog: Blog
+    blog: Blog;
+    type: 
 }
 
-export default function BlogForm({editable, blog}: BlogFormProps) {
-  return (  
+export default function BlogForm({editable, blog, }: BlogFormProps) {
+  return (
     <SimpleEditor content={blog.content} editable={editable} />
   )
 }
