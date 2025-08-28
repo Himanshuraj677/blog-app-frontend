@@ -8,18 +8,30 @@ import { BlogInput } from "@/lib/types"
 export default function CreatePostPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-  const {user} = useAuth();
+  const {user, loading} = useAuth();
 
   useEffect(() => {
+  if (!loading) {
     if (!user) {
-      router.push("/")
-      return
+      router.push("/");
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false)
-  }, [router, user])
+  }
+}, [router, user, loading]);
 
-  const handleSubmit = (blog: BlogInput) => {
+  const handleSubmit = async (blog: BlogInput) => {
     console.log(blog);
+    const createblogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/create`;
+    const res = await fetch(createblogApi, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(blog),
+    })
+    const response = await res.json();
+    console.log(response);
   }
   if (isLoading) {
     return (

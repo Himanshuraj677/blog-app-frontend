@@ -4,6 +4,18 @@ import { Blog, BlogInput } from "@/lib/types";
 import React from "react";
 import { SimpleEditor } from "../tiptap-templates/simple/simple-editor";
 import Link from "next/link";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Button } from "../ui/button";
+import { handleImageUpload } from "@/utils/handleImageUpload";
 
 interface BlogFormProps {
   blog?: Blog;
@@ -29,8 +41,8 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
 
       {/* Title */}
       <div>
-        <label className="block font-medium mb-1">Title</label>
-        <input
+        <Label className="block font-medium mb-1">Title</Label>
+        <Input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -40,8 +52,8 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
 
       {/* Excerpt */}
       <div>
-        <label className="block font-medium mb-1">Excerpt</label>
-        <textarea
+        <Label className="block font-medium mb-1">Excerpt</Label>
+        <Textarea
           value={excerpt}
           onChange={(e) => setExcerpt(e.target.value)}
           className="w-full border rounded px-3 py-2"
@@ -50,8 +62,8 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
 
       {/* Tags */}
       <div>
-        <label className="block font-medium mb-1">Tags (comma separated)</label>
-        <input
+        <Label className="block font-medium mb-1">Tags (comma separated)</Label>
+        <Input
           type="text"
           value={tags.join(",")}
           onChange={(e) =>
@@ -63,13 +75,18 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
 
       {/* Featured Image */}
       <div>
-        <label className="block font-medium mb-1">Featured Image URL</label>
-        <input
-          type="text"
-          value={featuredImage}
-          onChange={(e) => setFeaturedImage(e.target.value)}
+        <Label className="block font-medium mb-1">Featured Image URL</Label>
+        <Input
+          type="file"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleImageUpload(file).then((url) => setFeaturedImage(url));
+            }
+          }}
           className="w-full border rounded px-3 py-2"
         />
+
         {featuredImage && (
           <Image
             src={featuredImage}
@@ -83,20 +100,21 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
 
       {/* Status */}
       <div>
-        <label className="block font-medium mb-1">Status</label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </select>
+        <Label className="block font-medium mb-1">Status</Label>
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-full border rounded px-3 py-2">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="draft">Draft</SelectItem>
+            <SelectItem value="published">Published</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Tiptap Editor */}
       <div>
-        <label className="block font-medium mb-1">Content</label>
+        <Label className="block font-medium mb-1">Content</Label>
         <div className="border rounded p-2 min-h-[300px]">
           <SimpleEditor
             content={content}
@@ -109,12 +127,12 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
       {/* Actions */}
       <div className="flex justify-between">
         <Link
-          href="/blogs"
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          href="/"
+          className="px-3 py-1 bg-gray-600 rounded hover:bg-gray-800"
         >
           Cancel
         </Link>
-        <button
+        <Button
           onClick={() =>
             handleSubmit({
               title,
@@ -125,10 +143,10 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
               content,
             })
           }
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          variant="secondary"
         >
           {type === "create" ? "Create Blog" : "Save Changes"}
-        </button>
+        </Button>
       </div>
     </div>
   );

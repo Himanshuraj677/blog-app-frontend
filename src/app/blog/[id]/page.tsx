@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/layout/navbar";
 import React, { useState, useEffect } from "react";
 import {
   ArrowLeft,
@@ -50,7 +49,6 @@ export default function Page({ params }: Blogpageprops) {
 }
   return (
     <div className="w-full min-h-screen relative">
-      <Navbar />
       <div className="fixed top-16 left-0 z-10 h-1 w-full">
         <div
           className="h-full bg-primary transition-all duration-150 ease-out blur-sm"

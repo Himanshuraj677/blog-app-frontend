@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css";
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "@/components/layout/navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default function RootLayout({
         className={GeistSans.className}
       >
         <AuthProvider>
+          <Navbar />
           {children}
           <ToastContainer theme="dark" />
         </AuthProvider>

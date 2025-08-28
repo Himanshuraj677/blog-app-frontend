@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
     checkProfile();
-  }, []);
+  }, [meEndpoint]);
 
   const logout = async () => {
     try {
