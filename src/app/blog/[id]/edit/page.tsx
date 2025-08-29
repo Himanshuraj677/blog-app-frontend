@@ -1,24 +1,79 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { Mock_blogs } from "@/lib/mock-data";
+import { useEffect } from "react";
 import BlogForm from "@/components/blog/blog-form";
-import { BlogInput } from "@/lib/types";
+import { Blog, BlogInput } from "@/lib/types";
+import { HttpMethod, useService } from "@/hooks/useService";
+import { toast } from "react-toastify";
+
+interface BlogApiResponseType extends Record<string, any> {
+  data: Blog;
+}
 
 export default function EditBlog() {
-  const { id } = useParams();
+  const { id: blogId } = useParams();
   const router = useRouter();
-  const blog = Mock_blogs.find((b) => b.id === id);
 
-  const handleSave = (blog: BlogInput) => {
-    console.log("Updated Blog:", blog);
-    alert("Blog saved (check console)");
-    router.push("/");
+  const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
+  const upadteBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
+
+  const {
+    loading,
+    execute: fetchBlog,
+    data: apiData,
+    error: fetchError,
+  } = useService<BlogApiResponseType>(fetchBlogApi);
+
+  const {
+    loading: loadingUpdate,
+    execute: updateBlog,
+    data,
+    error: updateError,
+  } = useService<BlogApiResponseType, BlogInput>(upadteBlogApi);
+
+  const blog = apiData?.data;
+  useEffect(() => {
+    fetchBlog();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      toast.success("Blog updated successfully!");
+      router.push(`/blog/${blogId}`);
+    }
+  }, [data, blogId, router]);
+
+  const handleSave = async (blog: BlogInput) => {
+    const override = {
+      method: "PUT" as HttpMethod,
+      body: blog,
+    };
+    await updateBlog(override);
   };
 
-  if (!blog) return <div>Blog not found</div>;
+  useEffect(() => {
+    if (updateError) {
+      toast.error(updateError.message);
+    }
+  }, [updateError]);
 
-  return (
-    <BlogForm blog={blog} type="edit" handleSubmit={handleSave}/>
-  );
+  if (fetchError) {
+    return (
+      <div className="min-h-screen flex-col flex justify-center items-center">
+        <p className="font-bold text-3xl">No blog found....</p>
+      </div>
+    );
+  }
+
+  if (loading || !blog) {
+    return (
+      <div className="min-h-screen flex-col flex justify-center items-center">
+        <div className="w-8 h-8 animate-spin rounded-full border-t-2 border-primary"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  return <BlogForm blog={blog} type="edit" handleSubmit={handleSave} />;
 }

@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import BlogForm from "@/components/blog/blog-form"
 import { useAuth } from "@/context/AuthContext"
 import { BlogInput } from "@/lib/types"
 export default function CreatePostPage() {
-  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const {user, loading} = useAuth();
 
@@ -14,8 +13,6 @@ export default function CreatePostPage() {
   if (!loading) {
     if (!user) {
       router.push("/");
-    } else {
-      setIsLoading(false);
     }
   }
 }, [router, user, loading]);
@@ -33,7 +30,7 @@ export default function CreatePostPage() {
     const response = await res.json();
     console.log(response);
   }
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

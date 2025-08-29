@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 interface UseServiceOptions<G> {
   method?: HttpMethod;
@@ -12,7 +12,7 @@ interface UseServiceResult<T, G> {
   data: T | null;
   loading: boolean;
   error: Error | null;
-  execute: (overrideOptions?: UseServiceOptions<G>) => void;
+  execute: (overrideOptions?: UseServiceOptions<G>) => Promise<void>;
 }
 
 export function useService<T, G = unknown>(

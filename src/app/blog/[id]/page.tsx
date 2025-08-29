@@ -19,14 +19,26 @@ import { Mock_blogs } from "@/lib/mock-data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { useService } from "@/hooks/useService";
+import { Blog } from "@/lib/types";
 
 interface Blogpageprops {
-  params: Promise<{ id: string }> 
+  params: Promise<{ id: string }>;
+}
+
+interface BlogApiResponseType extends Record<string, any> {
+  data: Blog;
 }
 export default function Page({ params }: Blogpageprops) {
   const { id: blogId } = React.use(params);
   const [readingProgress, setReadingProgress] = useState(0);
-  const blog = Mock_blogs.find((blog) => blog.id === blogId);
+  const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
+  const { loading, execute, data: apiData, error } =
+    useService<BlogApiResponseType>(fetchBlogApi);
+  const blog = apiData?.data;
+  useEffect(() => {
+    execute();
+  }, [execute])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,13 +52,25 @@ export default function Page({ params }: Blogpageprops) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  if (!blog) {
-  return (
-    <div className="w-full min-h-screen flex items-center justify-center">
-      <h2 className="text-xl font-semibold">Blog not found</h2>
-    </div>
-  );
-}
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex-col flex justify-center items-center">
+        <p className="font-bold text-4xl">No blog found....</p>
+      </div>
+    );
+  }
+
+  if (loading || !blog) {
+    return (
+      <div className="min-h-screen flex-col flex justify-center items-center">
+        <div className="w-8 h-8 animate-spin rounded-full border-t-2 border-primary"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+
   return (
     <div className="w-full min-h-screen relative">
       <div className="fixed top-16 left-0 z-10 h-1 w-full">
@@ -56,7 +80,10 @@ export default function Page({ params }: Blogpageprops) {
         />
       </div>
       <div className="container max-w-4xl mx-auto p-4">
-        <Link href="/" className="flex gap-4 text-sm items-center font-semibold">
+        <Link
+          href="/"
+          className="flex gap-4 text-sm items-center font-semibold"
+        >
           <ArrowLeft className="w-4 h-8" />
           <span>Back to posts</span>
         </Link>
@@ -87,8 +114,11 @@ export default function Page({ params }: Blogpageprops) {
                   <div>{formatNumber(blog.engagement.views)} views</div>
                 </span>
               </div>
-              <Link href={`/blog/${blogId}/edit`}><Button variant="secondary" className="">Edit</Button></Link>
-              
+              <Link href={`/blog/${blogId}/edit`}>
+                <Button variant="secondary" className="">
+                  Edit
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="flex gap-4">

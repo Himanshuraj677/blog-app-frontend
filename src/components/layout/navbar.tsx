@@ -10,6 +10,7 @@ import AuthForm from "../auth/AuthForm";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Navbar() {
   const [open, setOpen] = useState<boolean>(false);
@@ -21,9 +22,9 @@ export default function Navbar() {
     <nav className="sticky z-40 top-0 h-16 border-b border-slate-800 bg-background">
       <div className="relative flex justify-between items-center h-full container mx-auto px-4">
         {/* Logo */}
-        <div className="w-auto">
+        <Link href="/">
           <TechBlogLogo />
-        </div>
+        </Link>
 
         {/* Search input */}
         <div className="hidden absolute left-1/2 -translate-x-1/2 w-1/3 md:block">
