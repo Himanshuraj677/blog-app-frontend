@@ -3,15 +3,30 @@ import Sidebar from "@/components/layout/sidebar";
 import BlogCard from "@/components/blog/blogCard";
 import { useAuth } from "@/context/AuthContext";
 import { useService } from "@/hooks/useService";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Blog } from "@/lib/types";
 
 interface BlogApiResponseType extends Record<string, any> {
   data: Blog[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 export default function Home() {
   const { loading } = useAuth();
-  const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}`;
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, sethasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+
+
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/?page=${page}&limit=5`;
   const {
     data,
     loading: apiLoading,
@@ -21,9 +36,35 @@ export default function Home() {
 
   useEffect(() => {
     execute();
-  }, [execute]);
+  }, [page]);
+  
+  useEffect(() => {
+    if (data?.data) {
+      sethasMore(data.pagination.hasNextPage);
+      setBlogs((prev) => [...prev, ...data.data]);
+      setIsFetching(false);
+    }
+  }, [data]);
 
-  if (loading || apiLoading) {
+const observer = useRef<IntersectionObserver | null>(null);
+
+const setObserverRef = (node: HTMLDivElement | null) => {
+  if (observer.current) observer.current.disconnect(); // disconnect old observer
+  if (node) {
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isFetching) {
+          setIsFetching(true);
+          setPage((prev) => prev + 1);
+        }
+      },
+      { rootMargin: "100px", threshold: 1 }
+    );
+    observer.current.observe(node);
+  }
+};
+
+  if ((loading || apiLoading) && page === 1) {
     return (
       <div className="min-h-screen flex-col flex justify-center items-center">
         <div className="w-8 h-8 animate-spin rounded-full border-t-2 border-primary"></div>
@@ -50,10 +91,15 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-col gap-8 w-full">
-            {data.data.map((blog, id) => (
+            {blogs.map((blog, id) => (
               <BlogCard key={id} blog={blog} />
             ))}
           </div>
+          {hasMore && (
+            <div ref={setObserverRef} className="flex justify-center mt-8">
+              <div className="animate-spin w-8 h-8 border-t rounded-full"></div>
+            </div>
+          )}
         </main>
         <aside className="hidden lg:block relative w-80">
           <Sidebar />

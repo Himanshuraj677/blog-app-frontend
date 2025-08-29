@@ -75,5 +75,5 @@ export default function EditBlog() {
     );
   }
 
-  return <BlogForm blog={blog} type="edit" handleSubmit={handleSave} />;
+  return <BlogForm blog={blog} type="edit" handleSubmit={handleSave} isLoading={loadingUpdate}/>;
 }

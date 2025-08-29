@@ -21,9 +21,15 @@ interface BlogFormProps {
   blog?: Blog;
   type: "create" | "edit";
   handleSubmit: (data: BlogInput) => void;
+  isLoading: boolean;
 }
 
-export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
+export default function BlogForm({
+  blog,
+  type,
+  handleSubmit,
+  isLoading,
+}: BlogFormProps) {
   const [title, setTitle] = useState(blog?.title || "");
   const [excerpt, setExcerpt] = useState(blog?.excerpt || "");
   const [tags, setTags] = useState<string[]>(blog?.tags || []);
@@ -143,9 +149,16 @@ export default function BlogForm({ blog, type, handleSubmit }: BlogFormProps) {
               content,
             })
           }
+          disabled={isLoading}
           variant="secondary"
         >
-          {type === "create" ? "Create Blog" : "Save Changes"}
+          {isLoading ? (
+            <div className="w-2 h-2 animate-spin border-t border-white"></div>
+          ) : type === "create" ? (
+            "Create Blog"
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </div>
     </div>
