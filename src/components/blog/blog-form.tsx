@@ -153,7 +153,10 @@ export default function BlogForm({
           variant="secondary"
         >
           {isLoading ? (
-            <div className="w-2 h-2 animate-spin border-t border-white"></div>
+            <div className="flex gap-0.5 items-center">
+              <span>Creating...</span>
+              <div className="w-2 h-2 animate-spin border-t border-white rounded-full"></div>
+            </div>
           ) : type === "create" ? (
             "Create Blog"
           ) : (
