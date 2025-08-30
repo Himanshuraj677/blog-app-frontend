@@ -17,10 +17,11 @@ interface UseServiceResult<T, G> {
 
 export function useService<T, G = unknown>(
   url: string,
-  options?: UseServiceOptions<G>
+  options?: UseServiceOptions<G>,
+  immediate = false
 ): UseServiceResult<T, G> {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(immediate);
   const [error, setError] = useState<Error | null>(null);
   const execute = useCallback(
     async (overrideOptions?: UseServiceOptions<G>) => {

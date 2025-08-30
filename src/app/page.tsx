@@ -1,7 +1,6 @@
 "use client";
 import Sidebar from "@/components/layout/sidebar";
 import BlogCard from "@/components/blog/blogCard";
-import { useAuth } from "@/context/AuthContext";
 import { useService } from "@/hooks/useService";
 import { useEffect, useRef, useState } from "react";
 import { Blog } from "@/lib/types";
@@ -18,21 +17,18 @@ interface BlogApiResponseType extends Record<string, any> {
   };
 }
 export default function Home() {
-  const { loading } = useAuth();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, sethasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
 
-
-  const loaderRef = useRef<HTMLDivElement | null>(null);
   const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/?page=${page}&limit=5`;
   const {
     data,
     loading: apiLoading,
     error,
     execute,
-  } = useService<BlogApiResponseType>(fetchBlogApi);
+  } = useService<BlogApiResponseType>(fetchBlogApi, undefined, true);
 
   useEffect(() => {
     execute();
@@ -49,7 +45,7 @@ export default function Home() {
 const observer = useRef<IntersectionObserver | null>(null);
 
 const setObserverRef = (node: HTMLDivElement | null) => {
-  if (observer.current) observer.current.disconnect(); // disconnect old observer
+  if (observer.current) observer.current.disconnect();
   if (node) {
     observer.current = new IntersectionObserver(
       (entries) => {
@@ -64,7 +60,7 @@ const setObserverRef = (node: HTMLDivElement | null) => {
   }
 };
 
-  if ((loading || apiLoading) && page === 1) {
+  if (apiLoading && page === 1) {
     return (
       <div className="min-h-screen flex-col flex justify-center items-center">
         <div className="w-8 h-8 animate-spin rounded-full border-t-2 border-primary"></div>
@@ -73,7 +69,7 @@ const setObserverRef = (node: HTMLDivElement | null) => {
     );
   }
 
-  if (!data?.data) {
+  if (!apiLoading && data?.data.length === 0) {
     return (
       <div className="min-h-screen flex-col flex justify-center items-center">
         <p className="font-bold text-4xl">No blog found....</p>

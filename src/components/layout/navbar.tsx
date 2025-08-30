@@ -1,22 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import TechBlogLogo from "../svg/logo";
 import { AuthModal } from "../ui/modal";
 import AuthForm from "../auth/AuthForm";
-import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
+  const { data: session, isPending: loading } = authClient.useSession();
+  const router = useRouter();
+
   const [open, setOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const { user, loading } = useAuth();
-  const router = useRouter();
+  const [hasCreatePermission, setHasCreatePermission] = useState(false);
+
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const checkPermission = async () => {
+      try {
+        const { data, error } = await authClient.admin.hasPermission({
+          userId: session.user.id,
+          permission: { blog: ["create"] },
+        });
+        if (error) {
+          console.error("Permission error:", error);
+        } else {
+          setHasCreatePermission(data?.success || false);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    checkPermission();
+  }, [session]);
 
   return (
     <nav className="sticky z-40 top-0 h-16 border-b border-slate-800 bg-background">
@@ -46,13 +70,20 @@ export default function Navbar() {
           {loading ? (
             // Placeholder while checking auth
             <div className="w-24 h-8 bg-gray-700 animate-pulse rounded" />
-          ) : user ? (
+          ) : session?.user ? (
             <div className="flex items-center gap-4">
-              <Button variant="secondary" onClick={() => router.push('/blog/create')}>Create</Button>
+              {hasCreatePermission && (
+                <Button
+                  variant="secondary"
+                  onClick={() => router.push("/blog/create")}
+                >
+                  Create
+                </Button>
+              )}
               <Avatar>
-                <AvatarImage src={user.avatarUrl || ""} />
+                <AvatarImage src={session.user.image || ""} />
                 <AvatarFallback>
-                  {user.fullName ? user.fullName[0] : "U"}
+                  {session.user.name ? session.user.name[0] : "U"}
                 </AvatarFallback>
               </Avatar>
             </div>

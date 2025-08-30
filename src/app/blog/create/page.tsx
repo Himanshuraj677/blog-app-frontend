@@ -3,27 +3,53 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import BlogForm from "@/components/blog/blog-form"
-import { useAuth } from "@/context/AuthContext"
 import { BlogInput } from "@/lib/types"
 import { HttpMethod, useService } from "@/hooks/useService"
 import { toast } from "react-toastify"
+import { authClient } from "@/lib/auth-client"
+import React from "react"
+import NotFoundPage from "@/components/page-not-found/notfound"
 
 interface CreateApiResponse extends Record<string, any> {
   message: string;
 }
 export default function CreatePostPage() {
   const router = useRouter()
-  const {user, loading} = useAuth();
+  const { data: session, isPending: loading } = authClient.useSession();
   const createblogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/create`;
   const {loading: isCreating, error, data, execute} = useService<CreateApiResponse, BlogInput>(createblogApi);
 
+  const [hasCreatePermission, setHasCreatePermission] = useState(false);
+  // console.log(hasCreatePermission);
+  useEffect(() => {
+      if (!session?.user?.id) return;
+  
+      const checkPermission = async () => {
+        try {
+          const { data, error } = await authClient.admin.hasPermission({
+            userId: session.user.id,
+            permission: { blog: ["create"] },
+          });
+          if (error) {
+            console.error("Permission error:", error);
+          } else {
+            setHasCreatePermission(data?.success || false);
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+        }
+      };
+  
+      checkPermission();
+    }, [session]);
+
   useEffect(() => {
   if (!loading) {
-    if (!user) {
+    if (!session?.user) {
       router.push("/");
     }
   }
-}, [router, user, loading]);
+}, [router, session, loading]);
 
   const handleSubmit = async (blog: BlogInput) => {
     console.log(blog);
@@ -44,6 +70,7 @@ export default function CreatePostPage() {
       toast.error(error.message || "Unable to create a blog")
     }
   }, [data, error]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -53,6 +80,10 @@ export default function CreatePostPage() {
         </div>
       </div>
     )
+  }
+
+  if (!hasCreatePermission) {
+    return <NotFoundPage />
   }
 
   return <BlogForm type="create" handleSubmit={handleSubmit} isLoading={isCreating}/>

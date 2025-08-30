@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,32 +13,16 @@ import {
 } from "@/lib/schema/auth";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useService } from "@/hooks/useService";
-import { API_SERVICES } from "@/lib/constant";
 import Spinner from "../ui/spinner";
 import { toast } from "react-toastify";
-import { useAuth } from "@/context/AuthContext";
-
-interface User {
-  id: string;
-  fullName: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { authClient } from "@/lib/auth-client";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
   setOpen: (open: boolean) => void;
 }
 
-interface AuthResponse {
-  message: string
-  user: User
-}
-
 export default function AuthForm({ mode, setOpen }: AuthFormProps) {
-  const { setUser } = useAuth();
   const {
     register,
     handleSubmit,
@@ -48,33 +32,55 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const apiEndpoint =
-    mode === "signin"
-      ? `${API_SERVICES.auth}/signin`
-      : `${API_SERVICES.auth}/signup`;
-  const { data, loading, error, execute } = useService<
-    AuthResponse,
-    signinType | signupType
-  >(apiEndpoint);
-  useEffect(() => {
-    if (data) {
-      // Save user info if needed
-      if ("user" in data) {
-        setUser(data.user)
-      }
-      toast.success(
-        mode === "signin" ? "Signin successful!" : "Signup successful!"
-      );
-      setOpen(false);
-    }
-    if (error) toast.error(error.message);
-  }, [data, error, setOpen, mode, setUser]);
 
-  const formSubmit = (data: signinType | signupType) => {
+  const [loading, setLoading] = useState(false);
+
+  const formSubmit = async (data: signinType | signupType) => {
     if (mode === "signup") {
-      execute({ method: "POST", body: data });
+      const { error } = await authClient.signUp.email(
+        {
+          email: data.email,
+          password: data.password,
+          name: `${data.fullName.trim()}`,
+        },
+        {
+          onRequest: (ctx) => {
+            console.log(data);
+            setLoading(true);
+          },
+          onSuccess: (ctx) => {
+            setLoading(false);
+            toast.success("User created successfully");
+            setOpen(false);
+          },
+          onError: (ctx) => {
+            setLoading(false);
+            toast.error(ctx.error.message);
+          },
+        }
+      );
     } else if (mode === "signin") {
-      execute({ method: "POST", body: data });
+      const { error } = await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+          rememberMe: true,
+        },
+        {
+          onRequest: (ctx) => {
+            setLoading(true);
+          },
+          onSuccess: (ctx) => {
+            setLoading(false);
+            toast.success("You have logged in successfully");
+            setOpen(false);
+          },
+          onError: (ctx) => {
+            setLoading(false);
+            toast.error(ctx.error.message);
+          },
+        }
+      );
     }
   };
   return (
