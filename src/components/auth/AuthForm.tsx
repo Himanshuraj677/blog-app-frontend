@@ -115,7 +115,7 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
             placeholder="Enter your email"
           />
           {errors.email && (
-            <p className="text-destructive text-sm">{errors.email.message}</p>
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
           )}
         </div>
         <div className="space-y-2">
