@@ -14,13 +14,12 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import formatNumber from "@/lib/formatNumber";
 import Image from "next/image";
-import BlogForm from "@/components/blog/blog-form";
-import { Mock_blogs } from "@/lib/mock-data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { useService } from "@/hooks/useService";
 import { Blog } from "@/lib/types";
+import { authClient } from "@/lib/auth-client";
 
 interface Blogpageprops {
   params: Promise<{ id: string }>;
@@ -31,14 +30,18 @@ interface BlogApiResponseType extends Record<string, any> {
 }
 export default function Page({ params }: Blogpageprops) {
   const { id: blogId } = React.use(params);
-  const [readingProgress, setReadingProgress] = useState(0);
   const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
   const { loading, execute, data: apiData, error } =
-    useService<BlogApiResponseType>(fetchBlogApi);
+  useService<BlogApiResponseType>(fetchBlogApi);
   const blog = apiData?.data;
+  const { data: session, isPending } = authClient.useSession();
+
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [hasEditPermission, setHasEditPermission] = useState(false);
+
   useEffect(() => {
     execute();
-  }, [execute])
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +55,28 @@ export default function Page({ params }: Blogpageprops) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+      if (!session?.user?.id) return;
+  
+      const checkPermission = async () => {
+        try {
+          const { data, error } = await authClient.admin.hasPermission({
+            userId: session.user.id,
+            permission: { blog: ["update"] },
+          });
+          if (error) {
+            console.error("Permission error:", error);
+          } else {
+            setHasEditPermission(data?.success || false);
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+        }
+      };
+  
+      checkPermission();
+    }, [session]);
 
   if (error) {
     return (
@@ -114,11 +139,11 @@ export default function Page({ params }: Blogpageprops) {
                   <div>{formatNumber(blog.engagement.views)} views</div>
                 </span>
               </div>
-              <Link href={`/blog/${blogId}/edit`}>
+              {(hasEditPermission || blog.authorId === session?.user.id) &&<Link href={`/blog/${blogId}/edit`}>
                 <Button variant="secondary" className="">
                   Edit
                 </Button>
-              </Link>
+              </Link>}
             </div>
           </div>
           <div className="flex gap-4">

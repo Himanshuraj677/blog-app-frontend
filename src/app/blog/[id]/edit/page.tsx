@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BlogForm from "@/components/blog/blog-form";
 import { Blog, BlogInput } from "@/lib/types";
 import { HttpMethod, useService } from "@/hooks/useService";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
+import NotFoundPage from "@/components/page-not-found/notfound";
 
 interface BlogApiResponseType extends Record<string, any> {
   data: Blog;
@@ -13,7 +15,9 @@ interface BlogApiResponseType extends Record<string, any> {
 
 export default function EditBlog() {
   const { id: blogId } = useParams();
+  const {data: session, isPending} = authClient.useSession();
   const router = useRouter();
+  const [hasEditPermission, setHasEditPermission] = useState(false);
 
   const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
   const upadteBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
@@ -36,6 +40,23 @@ export default function EditBlog() {
   useEffect(() => {
     fetchBlog();
   }, []);
+
+  useEffect(() => {
+    if (!session?.user.id) return;
+    const checkPermission = async () => {
+      const {data, error} = await authClient.admin.hasPermission({
+        userId: session?.user.id,
+        permission: {blog: ["update"]}
+      })
+      if (error) {
+        console.error("Permission error:", error);
+      }
+      else {
+        setHasEditPermission(data?.success || false);
+      }
+    }
+    checkPermission();
+  }, [session])
 
   useEffect(() => {
     if (data) {
@@ -73,6 +94,10 @@ export default function EditBlog() {
         <p>Loading...</p>
       </div>
     );
+  }
+
+  if (!hasEditPermission && blog.authorId !== session?.user?.id) {
+    return <NotFoundPage />
   }
 
   return <BlogForm blog={blog} type="edit" handleSubmit={handleSave} isLoading={loadingUpdate}/>;
