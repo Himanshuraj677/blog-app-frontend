@@ -174,7 +174,7 @@ export default function Page({ params }: Blogpageprops) {
               <Image
                 alt={blog.title}
                 fill
-                src="https://images.unsplash.com/photo-1619410283995-43d9134e7656?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0"
+                src={blog.featuredImage}
                 className="object-cover object-center rounded-md"
               />
             )}
