@@ -154,7 +154,7 @@ export default function BlogForm({
         >
           {isLoading ? (
             <div className="flex gap-0.5 items-center">
-              <span>Creating...</span>
+              <span>{type === "create" ? "Creating" : "Saving"}</span>
               <div className="w-2 h-2 animate-spin border-t border-white rounded-full"></div>
             </div>
           ) : type === "create" ? (

@@ -20,6 +20,8 @@ import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor
 import { useService } from "@/hooks/useService";
 import { Blog } from "@/lib/types";
 import { authClient } from "@/lib/auth-client";
+import { API_SERVICES } from "@/lib/constant";
+import { toast } from "react-toastify";
 
 interface Blogpageprops {
   params: Promise<{ id: string }>;
@@ -31,17 +33,47 @@ interface BlogApiResponseType extends Record<string, any> {
 export default function Page({ params }: Blogpageprops) {
   const { id: blogId } = React.use(params);
   const fetchBlogApi = `${process.env.NEXT_PUBLIC_BLOG_SERVICE}/${blogId}`;
-  const { loading, execute, data: apiData, error } =
-  useService<BlogApiResponseType>(fetchBlogApi);
+  const {
+    loading,
+    execute,
+    data: apiData,
+    error,
+  } = useService<BlogApiResponseType>(fetchBlogApi);
   const blog = apiData?.data;
   const { data: session, isPending } = authClient.useSession();
 
   const [readingProgress, setReadingProgress] = useState(0);
   const [hasEditPermission, setHasEditPermission] = useState(false);
+  const [userEngagement, setUserEngagement] = useState({
+    hasLiked: false,
+    hasBookmarked: false,
+  });
+
+  const [engagement, setEngagement] = useState({
+    likes: 0,
+    bookmarks: 0,
+    comments: 0,
+    views: 0,
+  });
 
   useEffect(() => {
     execute();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (blog) {
+      setUserEngagement({
+        hasLiked: blog.userEngagement.hasLiked,
+        hasBookmarked: blog.userEngagement.hasBookmarked,
+      });
+      setEngagement({
+        likes: blog.engagement.likes,
+        bookmarks: blog.engagement.bookmarks,
+        views: blog.engagement.views,
+        comments: blog.engagement.comments,
+      });
+    }
+  }, [blog]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,26 +89,84 @@ export default function Page({ params }: Blogpageprops) {
   }, []);
 
   useEffect(() => {
-      if (!session?.user?.id) return;
-  
-      const checkPermission = async () => {
-        try {
-          const { data, error } = await authClient.admin.hasPermission({
-            userId: session.user.id,
-            permission: { blog: ["update"] },
-          });
-          if (error) {
-            console.error("Permission error:", error);
-          } else {
-            setHasEditPermission(data?.success || false);
-          }
-        } catch (err) {
-          console.error("Unexpected error:", err);
+    if (!session?.user?.id) return;
+
+    const checkPermission = async () => {
+      try {
+        const { data, error } = await authClient.admin.hasPermission({
+          userId: session.user.id,
+          permission: { blog: ["update"] },
+        });
+        if (error) {
+          console.error("Permission error:", error);
+        } else {
+          setHasEditPermission(data?.success || false);
         }
-      };
-  
-      checkPermission();
-    }, [session]);
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    checkPermission();
+  }, [session]);
+
+  const toggleLike = async () => {
+    setEngagement((prev) => ({
+      ...prev,
+      likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
+    }));
+    setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
+    const response = await fetch(`${API_SERVICES.blog}/${blogId}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const errdata = await response.json();
+      toast.error(errdata?.error || "Something unknown occured");
+      setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
+      }));
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.likes + (userEngagement.hasLiked ? 1 : -1),
+      }));
+    }
+  };
+
+  const toggleBookmark = async () => {
+    setEngagement((prev) => ({
+      ...prev,
+      bookmarks: prev.bookmarks + (userEngagement.hasBookmarked ? -1 : 1),
+    }));
+    setUserEngagement((prev) => ({
+      ...prev,
+      hasBookmarked: !prev.hasBookmarked,
+    }));
+    const response = await fetch(`${API_SERVICES.blog}/${blogId}/bookmark`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const errdata = await response.json();
+      toast.error(errdata?.error || "Something unknown occured");
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.bookmarks + (userEngagement.hasLiked ? -1 : 1),
+      }));
+      setUserEngagement((prev) => ({
+        ...prev,
+        hasBookmarked: !prev.hasBookmarked,
+      }));
+    }
+  };
 
   if (error) {
     return (
@@ -94,7 +184,6 @@ export default function Page({ params }: Blogpageprops) {
       </div>
     );
   }
-
 
   return (
     <div className="w-full min-h-screen relative">
@@ -116,12 +205,14 @@ export default function Page({ params }: Blogpageprops) {
           <h2 className="text-4xl tracking-tight font-bold">{blog.title}</h2>
           <div className="flex gap-6">
             <Avatar className="w-10 h-10 hover:ring-2 hover:ring-primary transition-all">
-              <AvatarImage src={blog.featuredImage} />
+              <AvatarImage src={blog.author.image || ""} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="flex w-full justify-between">
               <div className="flex-1 flex flex-col gap-1">
-                <span className="text-foreground">{blog.author as string}</span>
+                <span className="text-foreground">
+                  {blog.author.name as string}
+                </span>
                 <span className="text-muted-foreground text-sm flex gap-2 items-center">
                   <span>
                     {new Date(blog.createdAt).toLocaleDateString("en-US", {
@@ -136,14 +227,16 @@ export default function Page({ params }: Blogpageprops) {
                     <span>{blog.readingTime} min read</span>
                   </div>
                   <span>•</span>
-                  <div>{formatNumber(blog.engagement.views)} views</div>
+                  <div>{formatNumber(engagement.views)} views</div>
                 </span>
               </div>
-              {(hasEditPermission || blog.authorId === session?.user.id) &&<Link href={`/blog/${blogId}/edit`}>
-                <Button variant="secondary" className="">
-                  Edit
-                </Button>
-              </Link>}
+              {(hasEditPermission || blog.author.id === session?.user.id) && (
+                <Link href={`/blog/${blogId}/edit`}>
+                  <Button variant="secondary" className="">
+                    Edit
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex gap-4">
@@ -156,16 +249,26 @@ export default function Page({ params }: Blogpageprops) {
           <div className="flex items-center justify-between border-y border-slate-900 py-4">
             <div className="flex gap-4 md:gap-8">
               <div className="flex gap-2 items-center">
-                <Heart className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.likes)}</span>
+                <Heart
+                  className="w-5 h-5 cursor-pointer transition-transform hover:scale-110"
+                  fill={userEngagement.hasLiked ? "red" : "none"}
+                  stroke={userEngagement.hasLiked ? "red" : "currentColor"}
+                  onClick={toggleLike}
+                />{" "}
+                <span>{formatNumber(engagement.likes)}</span>
               </div>
               <div className="flex gap-2 items-center">
                 <MessageCircle className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.comments)}</span>
+                <span>{formatNumber(engagement.comments)}</span>
               </div>
             </div>
             <div className="flex gap-4 md:gap-8">
-              <Bookmark className="w-5 h-5" />
+              <Bookmark
+                className="w-5 h-5 cursor-pointer transition-transform hover:scale-110"
+                fill={userEngagement.hasBookmarked ? "white" : "none"}
+                stroke={userEngagement.hasBookmarked ? "white" : "currentColor"}
+                onClick={toggleBookmark}
+              />
               <Share className="w-5 h-5" />{" "}
             </div>
           </div>

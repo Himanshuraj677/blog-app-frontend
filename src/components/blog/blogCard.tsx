@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Blog } from "@/lib/types";
 import Image from "next/image";
@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
+import { API_SERVICES } from "@/lib/constant";
+import { toast } from "react-toastify";
 interface BlogcardProps {
   blog: Blog;
 }
@@ -23,6 +25,76 @@ const formatNumber = (count: number): string => {
 };
 
 export default function BlogCard({ blog }: BlogcardProps) {
+  const [userEngagement, setUserEngagement] = useState({
+    hasLiked: blog.userEngagement.hasLiked,
+    hasBookmarked: blog.userEngagement.hasBookmarked,
+  });
+
+  const [engagement, setEngagement] = useState({
+    likes: blog.engagement.likes,
+    bookmarks: blog.engagement.bookmarks,
+    comments: blog.engagement.comments,
+    views: blog.engagement.views,
+  });
+
+  const toggleLike = async () => {
+    setEngagement((prev) => ({
+      ...prev,
+      likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
+    }));
+    setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
+    const response = await fetch(`${API_SERVICES.blog}/${blog.id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const errdata = await response.json();
+      console.log(errdata)
+      toast.error(errdata?.error || "Something unknown occured");
+      setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
+      }));
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.likes + (userEngagement.hasLiked ? 1 : -1),
+      }));
+    }
+  };
+
+  const toggleBookmark = async () => {
+    setEngagement((prev) => ({
+      ...prev,
+      bookmarks: prev.bookmarks + (userEngagement.hasBookmarked ? -1 : 1),
+    }));
+    setUserEngagement((prev) => ({
+      ...prev,
+      hasBookmarked: !prev.hasBookmarked,
+    }));
+    const response = await fetch(`${API_SERVICES.blog}/${blog.id}/bookmark`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const errdata = await response.json();
+      toast.error(errdata?.error || "Something unknown occured");
+      setEngagement((prev) => ({
+        ...prev,
+        likes: prev.bookmarks + (userEngagement.hasLiked ? -1 : 1),
+      }));
+      setUserEngagement((prev) => ({
+        ...prev,
+        hasBookmarked: !prev.hasBookmarked,
+      }));
+    }
+  };
   return (
     <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1 py-0 bg-background overflow-hidden border-slate-800">
       <CardContent className="p-0">
@@ -38,11 +110,13 @@ export default function BlogCard({ blog }: BlogcardProps) {
           {/* Author Info */}
           <div className="flex gap-6">
             <Avatar className="w-10 h-10 hover:ring-2 hover:ring-primary transition-all">
-              <AvatarImage src={blog.featuredImage} />
+              <AvatarImage src={blog.author.image || ""} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="flex-1 flex flex-col">
-              <div className="text-foreground">{blog.author as string}</div>
+              <div className="text-foreground">
+                {blog.author.name as string}
+              </div>
               <div className="text-muted-foreground text-sm flex gap-1 items-center">
                 <span>
                   {new Date(blog.createdAt).toLocaleDateString("en-US", {
@@ -105,20 +179,30 @@ export default function BlogCard({ blog }: BlogcardProps) {
           <div className="flex items-center justify-between border-t border-slate-800 pt-6 mb-6">
             <div className="flex gap-4 md:gap-8">
               <div className="flex gap-2 items-center">
-                <Heart className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.likes)}</span>
+                <Heart
+                  className="w-5 h-5 cursor-pointer transition-transform hover:scale-110"
+                  fill={userEngagement.hasLiked ? "red" : "none"}
+                  stroke={userEngagement.hasLiked ? "red" : "currentColor"}
+                  onClick={toggleLike}
+                />{" "}
+                <span>{formatNumber(engagement.likes)}</span>
               </div>
               <div className="flex gap-2 items-center">
                 <MessageCircle className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.comments)}</span>
+                <span>{formatNumber(engagement.comments)}</span>
               </div>
               <div className="flex gap-2 items-center">
                 <Eye className="w-5 h-5" />{" "}
-                <span>{formatNumber(blog.engagement.views)}</span>
+                <span>{formatNumber(engagement.views)}</span>
               </div>
             </div>
             <div className="flex gap-4 md:gap-8">
-              <Bookmark className="w-5 h-5" />
+              <Bookmark
+                className="w-5 h-5 cursor-pointer transition-transform hover:scale-110"
+                fill={userEngagement.hasBookmarked ? "white" : "none"}
+                stroke={userEngagement.hasBookmarked ? "white" : "currentColor"}
+                onClick={toggleBookmark}
+              />
               <Share className="w-5 h-5" />{" "}
             </div>
           </div>
