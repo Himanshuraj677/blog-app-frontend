@@ -73,3 +73,15 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface BlogApiResponseType extends Record<string, any> {
+  data: Blog[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}

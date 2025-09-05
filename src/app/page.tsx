@@ -3,19 +3,8 @@ import Sidebar from "@/components/layout/sidebar";
 import BlogCard from "@/components/blog/blogCard";
 import { useService } from "@/hooks/useService";
 import { useEffect, useRef, useState } from "react";
-import { Blog } from "@/lib/types";
+import { Blog, BlogApiResponseType } from "@/lib/types";
 
-interface BlogApiResponseType extends Record<string, any> {
-  data: Blog[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
-}
 export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [page, setPage] = useState(1);

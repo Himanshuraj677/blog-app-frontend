@@ -111,60 +111,69 @@ export default function Page({ params }: Blogpageprops) {
   }, [session]);
 
   const toggleLike = async () => {
+    const prevUserEngagement = { ...userEngagement };
+    const prevEngagement = { ...engagement };
+  
+    // Optimistic update
     setEngagement((prev) => ({
       ...prev,
-      likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
+      likes: prev.likes + (prevUserEngagement.hasLiked ? -1 : 1),
     }));
     setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
-    const response = await fetch(`${API_SERVICES.blog}/${blogId}/like`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-    if (!response.ok) {
-      const errdata = await response.json();
-      toast.error(errdata?.error || "Something unknown occured");
-      setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
-      setEngagement((prev) => ({
-        ...prev,
-        likes: prev.likes + (userEngagement.hasLiked ? -1 : 1),
-      }));
-      setEngagement((prev) => ({
-        ...prev,
-        likes: prev.likes + (userEngagement.hasLiked ? 1 : -1),
-      }));
+  
+    try {
+      const response = await fetch(`${API_SERVICES.blog}/${blog.id}/like`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const errdata = await response.json();
+        toast.error(errdata?.error || errdata?.message || "Something went wrong");
+  
+        // rollback
+        setUserEngagement(prevUserEngagement);
+        setEngagement(prevEngagement);
+      }
+    } catch (err) {
+      toast.error("Network error");
+      setUserEngagement(prevUserEngagement);
+      setEngagement(prevEngagement);
     }
   };
 
   const toggleBookmark = async () => {
+    const prevUserEngagement = { ...userEngagement };
+    const prevEngagement = { ...engagement };
+  
+    // Optimistic update
     setEngagement((prev) => ({
       ...prev,
-      bookmarks: prev.bookmarks + (userEngagement.hasBookmarked ? -1 : 1),
+      bookmarks: prev.bookmarks + (prevUserEngagement.hasBookmarked ? -1 : 1),
     }));
     setUserEngagement((prev) => ({
       ...prev,
       hasBookmarked: !prev.hasBookmarked,
     }));
-    const response = await fetch(`${API_SERVICES.blog}/${blogId}/bookmark`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-    if (!response.ok) {
-      const errdata = await response.json();
-      toast.error(errdata?.error || "Something unknown occured");
-      setEngagement((prev) => ({
-        ...prev,
-        likes: prev.bookmarks + (userEngagement.hasLiked ? -1 : 1),
-      }));
-      setUserEngagement((prev) => ({
-        ...prev,
-        hasBookmarked: !prev.hasBookmarked,
-      }));
+  
+    try {
+      const response = await fetch(`${API_SERVICES.blog}/${blog.id}/bookmark`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const errdata = await response.json();
+        toast.error(errdata?.error || errdata?.message || "Something went wrong");
+  
+        // rollback
+        setUserEngagement(prevUserEngagement);
+        setEngagement(prevEngagement);
+      }
+    } catch (err) {
+      toast.error("Network error");
+      setUserEngagement(prevUserEngagement);
+      setEngagement(prevEngagement);
     }
   };
 
