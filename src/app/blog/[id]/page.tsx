@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Bookmark,
   Clock,
-  Eye,
   Heart,
   MessageCircle,
   Share,
@@ -122,7 +121,7 @@ export default function Page({ params }: Blogpageprops) {
     setUserEngagement((prev) => ({ ...prev, hasLiked: !prev.hasLiked }));
   
     try {
-      const response = await fetch(`${API_SERVICES.blog}/${blog.id}/like`, {
+      const response = await fetch(`${API_SERVICES.blog}/${blog?.id}/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -157,7 +156,7 @@ export default function Page({ params }: Blogpageprops) {
     }));
   
     try {
-      const response = await fetch(`${API_SERVICES.blog}/${blog.id}/bookmark`, {
+      const response = await fetch(`${API_SERVICES.blog}/${blog?.id}/bookmark`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

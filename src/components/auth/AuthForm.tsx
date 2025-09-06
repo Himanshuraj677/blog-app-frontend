@@ -35,47 +35,52 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
 
   const [loading, setLoading] = useState(false);
 
-  const formSubmit = async (data: signinType | signupType) => {
+  // Use type guard inside handler
+  const formSubmit = async (
+    data: signinType | signupType
+  ) => {
     if (mode === "signup") {
+      const { email, password, fullName } = data as signupType;
       const { error } = await authClient.signUp.email(
         {
-          email: data.email,
-          password: data.password,
-          name: `${data.fullName.trim()}`,
+          email,
+          password,
+          name: `${fullName.trim()}`,
         },
         {
-          onRequest: (ctx) => {
-            console.log(data);
+          onRequest: (ctx: unknown) => {
             setLoading(true);
           },
-          onSuccess: (ctx) => {
+          onSuccess: (ctx: unknown) => {
             setLoading(false);
             toast.success("User created successfully");
             setOpen(false);
           },
-          onError: (ctx) => {
+          onError: (ctx: { error: { message: string } }) => {
             setLoading(false);
             toast.error(ctx.error.message);
           },
         }
       );
-    } else if (mode === "signin") {
+    } else {
+      // "signin" mode
+      const { email, password } = data as signinType;
       const { error } = await authClient.signIn.email(
         {
-          email: data.email,
-          password: data.password,
+          email,
+          password,
           rememberMe: true,
         },
         {
-          onRequest: (ctx) => {
+          onRequest: (ctx: unknown) => {
             setLoading(true);
           },
-          onSuccess: (ctx) => {
+          onSuccess: (ctx: unknown) => {
             setLoading(false);
             toast.success("You have logged in successfully");
             setOpen(false);
           },
-          onError: (ctx) => {
+          onError: (ctx: { error: { message: string } }) => {
             setLoading(false);
             toast.error(ctx.error.message);
           },
@@ -83,6 +88,7 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
       );
     }
   };
+
   return (
     <div className="w-full relative z-50">
       <div className="flex justify-between items-center">
@@ -98,11 +104,11 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
             <Input
               id="fullName"
               type="text"
-              {...register("fullName")}
+              {...register("fullName" as const)}
               placeholder="Enter your full name"
             />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+            {"fullName" in errors && (
+              <p className="text-red-500 text-sm">{errors.fullName?.message}</p>
             )}
           </div>
         )}
@@ -115,7 +121,9 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
             placeholder="Enter your email"
           />
           {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
+            <p className="text-red-500 text-sm">
+              {errors.email?.message as string}
+            </p>
           )}
         </div>
         <div className="space-y-2">
@@ -127,7 +135,9 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
             placeholder="Enter your password"
           />
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <p className="text-red-500 text-sm">
+              {errors.password?.message as string}
+            </p>
           )}
         </div>
         {mode === "signup" && (
@@ -136,12 +146,12 @@ export default function AuthForm({ mode, setOpen }: AuthFormProps) {
             <Input
               id="confirmPassword"
               type="password"
-              {...register("confirmPassword")}
+              {...register("confirmPassword" as const)}
               placeholder="Confirm your password"
             />
-            {errors.confirmPassword && (
+            {"confirmPassword" in errors && (
               <p className="text-red-500 text-sm">
-                {errors.confirmPassword.message}
+                {errors.confirmPassword?.message}
               </p>
             )}
           </div>

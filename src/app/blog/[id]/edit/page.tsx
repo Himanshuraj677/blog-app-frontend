@@ -96,7 +96,7 @@ export default function EditBlog() {
     );
   }
 
-  if (!hasEditPermission && blog.authorId !== session?.user?.id) {
+  if (!hasEditPermission && blog.author.id !== session?.user?.id) {
     return <NotFoundPage />
   }
 
